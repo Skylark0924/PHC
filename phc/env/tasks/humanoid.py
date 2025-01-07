@@ -800,10 +800,10 @@ class Humanoid(BaseTask):
                 "model": self.humanoid_type,
                 "sim": "isaacgym"
             }
-            if os.path.exists("data/smpl"):
+            if os.path.exists("phc/data/smpl"):
                 robot = SMPL_Robot(
                     robot_cfg,
-                    data_dir="data/smpl",
+                    data_dir="phc/data/smpl",
                 )
             else:
                 print("!!!!!!! SMPL files not found, loading pre-computed humanoid assets, only for demo purposes !!!!!!!")
