@@ -31,7 +31,7 @@
             <joint name="L_Ankle_x" type="hinge" pos="0 0 0" axis="1 0 0" user="150 2.5 1 500 10 2" armature="0.01" range="-90.0000 90.0000" damping="0" stiffness="0"/>
             <joint name="L_Ankle_y" type="hinge" pos="0 0 0" axis="0 1 0" user="150 2.5 1 500 10 2" armature="0.01" range="-90.0000 90.0000" damping="0" stiffness="0"/>
             <joint name="L_Ankle_z" type="hinge" pos="0 0 0" axis="0 0 1" user="150 2.5 1 500 10 2" armature="0.01" range="-90.0000 90.0000" damping="0" stiffness="0"/>
-            <geom type="box" density="449.071569" pos="0.0233 -0.0239 0.0242" size="0.0483 0.0464 0.085" quat="1.0000 0.0000 0.0000 0.0000" name="L_Ankle"/>
+            <geom type="box" density="449.071564" pos="0.0233 -0.0239 0.0242" size="0.0483 0.0464 0.085" quat="1.0000 0.0000 0.0000 0.0000" name="L_Ankle"/>
             <body name="L_Toe" pos="0.0264 -0.0558 0.1193">
               <joint name="L_Toe_x" type="hinge" pos="0 0 0" axis="1 0 0" user="150 1 1 500 1 1" armature="0.01" range="-90.0000 90.0000" damping="0" stiffness="0"/>
               <joint name="L_Toe_y" type="hinge" pos="0 0 0" axis="0 1 0" user="150 1 1 500 1 1" armature="0.01" range="-45.0000 45.0000" damping="0" stiffness="0"/>

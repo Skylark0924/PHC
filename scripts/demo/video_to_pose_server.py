@@ -129,7 +129,7 @@ def start_pose_estimate():
                 pred_j3d = pred['poses3d'].numpy()
                 num_ppl = min(pred_j3d.shape[0], 5)
                 
-                j3d_curr = pred_j3d[:num_ppl]/1000
+                j3d_curr = pred_j3d[:num_ppl]/10000
                 if num_ppl < 5:
                     j3d[num_ppl:, 0, 0] = np.arange(5 - num_ppl) + 1
                     

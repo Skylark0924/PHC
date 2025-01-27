@@ -1,0 +1,110 @@
+humanoid_type: y1
+bias_offset: False
+has_self_collision: False
+has_mesh: False
+has_jt_limit: False
+has_dof_subset: True
+has_upright_start: True
+has_smpl_pd_offset: False
+remove_toe: False # For humanoid's geom toe
+motion_sym_loss: False
+sym_loss_coef: 1
+big_ankle: True
+
+has_shape_obs: false
+has_shape_obs_disc: false
+has_shape_variation: False
+
+masterfoot: False
+freeze_toe: false
+freeze_hand: False
+box_body: True
+real_weight: True
+real_weight_porpotion_capsules: True
+real_weight_porpotion_boxes: True
+
+
+body_names: [
+  'base','wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4', 'link_torso_5',
+  'link_head_1', 'link_head_2',
+  'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
+  'link_left_arm_6', 'ee_body_l', 'ee_finger_l1', 'ee_finger_l2',
+  'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
+  'link_right_arm_5', 'link_right_arm_6', 'ee_body_r', 'ee_finger_r1', 'ee_finger_r2'
+]
+limb_weight_group:
+  - [ 'base', 'wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4' , 'link_torso_5', 'link_head_1', 'link_head_2' ]
+  - [ 'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
+      'link_left_arm_6', 'ee_body_l', 'ee_finger_l1', 'ee_finger_l2' ]
+  - [ 'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
+      'link_right_arm_5', 'link_right_arm_6', 'ee_body_r', 'ee_finger_r1', 'ee_finger_r2' ]
+dof_names: [ 'wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4', 'link_torso_5',
+  'link_head_1', 'link_head_2',
+  'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
+  'link_left_arm_6',  'ee_finger_l1', 'ee_finger_l2',
+  'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
+  'link_right_arm_5', 'link_right_arm_6', 'ee_finger_r1', 'ee_finger_r2'
+]
+
+right_foot_name: 'wheel_r'
+left_foot_name: 'wheel_l'
+
+
+
+sim_with_urdf: True
+asset:
+  assetRoot: "./"
+  assetFileName: "phc/data/assets/robot/rby1/rby1.xml"
+#  urdfFileName: "phc/data/assets/robot/unitree_h1/urdf/h1.urdf"
+
+##### Config for extension
+#extend_config:
+#  - joint_name: "left_hand_link"
+#    parent_name: "left_elbow_link"
+#    pos: [ 0.3, 0.0, 0.0 ]
+#    rot: [ 1.0, 0.0, 0.0, 0.0 ]
+#  - joint_name: "right_hand_link"
+#    parent_name: "right_elbow_link"
+#    pos: [ 0.3, 0.0, 0.0 ]
+#    rot: [ 1.0, 0.0, 0.0, 0.0 ]
+#  - joint_name: "head_link"
+#    parent_name: "pelvis"
+#    pos: [ 0.0, 0.0, 0.6 ]
+#    rot: [ 1.0, 0.0, 0.0, 0.0 ]
+#  - joint_name: "left_toe_link"
+#    parent_name: "left_ankle_link"
+#    pos: [ 0.08, 0.0, 0.0 ]
+#    rot: [ 1.0, 0.0, 0.0, 0.0 ]
+#
+#  - joint_name: "right_toe_link"
+#    parent_name: "right_ankle_link"
+#    pos: [ 0.08, 0.0, 0.0 ]
+#    rot: [ 1.0, 0.0, 0.0, 0.0 ]
+
+
+base_link: "base"
+joint_matches:
+  - [ "base", "Pelvis" ]
+#  - [ "left_hip_yaw_link", "L_Hip" ]
+#  - [ "left_knee_link", "L_Knee" ]
+#  - [ "left_ankle_link", "L_Ankle" ]
+#  - [ "right_hip_yaw_link", "R_Hip" ]
+#  - [ "right_knee_link", "R_Knee" ]
+#  - [ "right_ankle_link", "R_Ankle" ]
+  - [ "link_left_arm_2", "L_Shoulder" ]
+  - [ "link_left_arm_3", "L_Elbow" ]
+  - [ "ee_body_l", "L_Hand" ]
+  - [ "link_right_arm_2", "R_Shoulder" ]
+  - [ "link_left_arm_3", "R_Elbow" ]
+  - [ "ee_body_r", "R_Hand" ]
+  - [ "head_1", "Head" ]
+#  - [ "left_toe_link", "L_Toe" ]
+#  - [ "right_toe_link", "R_Toe" ]
+
+
+smpl_pose_modifier:
+  - Pelvis: "[np.pi/2, 0, np.pi/2]"
+  - L_Shoulder: "[0, 0, -np.pi/2]"
+  - R_Shoulder: "[0, 0, np.pi/2]"
+  - L_Elbow: "[0, -np.pi/2, 0]"
+  - R_Elbow: "[0, np.pi/2, 0]"

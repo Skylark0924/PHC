@@ -19,8 +19,8 @@ from smpl_sim.smpllib.smpl_local_robot import SMPL_Robot as LocalRobot
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--debug", action="store_true", default=False)
-    parser.add_argument("--path", type=str, default="")
+    parser.add_argument("--debug", action="store_true")
+    parser.add_argument("--path", type=str, default="/home/ubuntu/Downloads/AMASS")
     args = parser.parse_args()
     
     process_split = "train"
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             "model": "smpl",
         }
 
-    smpl_local_robot = LocalRobot(robot_cfg,)
+    smpl_local_robot = LocalRobot(robot_cfg, data_dir="phc/data/smpl")
     if not osp.isdir(args.path):
         print("Please specify AMASS data path")
         import ipdb; ipdb.set_trace()
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     length_acc = []
     for data_path in tqdm(all_pkls):
         bound = 0
-        splits = data_path.split("/")[7:]
+        splits = data_path.split("/")[6:]
         key_name_dump = "0-" + "_".join(splits).replace(".npz", "")
         
         if (not splits[0] in process_set):
@@ -77,7 +77,7 @@ if __name__ == "__main__":
                     print("bound too small", key_name_dump, bound)
                     continue
             else:
-                print("issue irrecoverable", key_name_dump, issue)
+                # print("issue irrecoverable", key_name_dump, issue)
                 continue
             
         entry_data = dict(np.load(open(data_path, "rb"), allow_pickle=True))
@@ -146,8 +146,8 @@ if __name__ == "__main__":
 
         amass_full_motion_dict[key_name_dump] = new_motion_out
         
-    import ipdb; ipdb.set_trace()
+    # import ipdb; ipdb.set_trace()
     if upright_start:
-        joblib.dump(amass_full_motion_dict, "data/amass/amass_train_take6_upright.pkl", compress=True)
+        joblib.dump(amass_full_motion_dict, "phc/data/amass/amass_train_take6_upright.pkl", compress=True)
     else:
-        joblib.dump(amass_full_motion_dict, "data/amass/amass_train_take6.pkl", compress=True)
+        joblib.dump(amass_full_motion_dict, "phc/data/amass/amass_train_take6.pkl", compress=True)
