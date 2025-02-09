@@ -11,6 +11,8 @@ motion_sym_loss: False
 sym_loss_coef: 1
 big_ankle: True
 
+mobile_base: True
+
 has_shape_obs: false
 has_shape_obs_disc: false
 has_shape_variation: False
@@ -28,16 +30,17 @@ body_names: [
   'base','wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4', 'link_torso_5',
   'link_head_1', 'link_head_2',
   'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
-  'link_left_arm_6', 'ee_body_l', 'ee_finger_l1', 'ee_finger_l2',
+  'link_left_arm_6', 'ee_finger_l1', 'ee_finger_l2',
   'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
-  'link_right_arm_5', 'link_right_arm_6', 'ee_body_r', 'ee_finger_r1', 'ee_finger_r2'
+  'link_right_arm_5', 'link_right_arm_6', 'ee_finger_r1', 'ee_finger_r2'
 ]
 limb_weight_group:
   - [ 'base', 'wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4' , 'link_torso_5', 'link_head_1', 'link_head_2' ]
   - [ 'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
-      'link_left_arm_6', 'ee_body_l', 'ee_finger_l1', 'ee_finger_l2' ]
+      'link_left_arm_6', 'ee_finger_l1', 'ee_finger_l2' ]
   - [ 'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
-      'link_right_arm_5', 'link_right_arm_6', 'ee_body_r', 'ee_finger_r1', 'ee_finger_r2' ]
+      'link_right_arm_5', 'link_right_arm_6', 'ee_finger_r1', 'ee_finger_r2' ]
+  - ['link_head_1', 'link_head_2']
 dof_names: [ 'wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4', 'link_torso_5',
   'link_head_1', 'link_head_2',
   'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
@@ -51,14 +54,16 @@ left_foot_name: 'wheel_l'
 
 
 
-sim_with_urdf: True
+sim_with_urdf: False
 asset:
   assetRoot: "./"
-  assetFileName: "phc/data/assets/robot/rby1/rby1.xml"
+  # assetFileName: "phc/data/assets/robot/rby1/rby1.xml"
+  assetFileName: "phc/data/assets/robot/rby1/rby1_20250207.xml"
+
 #  urdfFileName: "phc/data/assets/robot/unitree_h1/urdf/h1.urdf"
 
 ##### Config for extension
-#extend_config:
+# extend_config:
 #  - joint_name: "left_hand_link"
 #    parent_name: "left_elbow_link"
 #    pos: [ 0.3, 0.0, 0.0 ]
@@ -91,15 +96,15 @@ joint_matches:
 #  - [ "right_hip_yaw_link", "R_Hip" ]
 #  - [ "right_knee_link", "R_Knee" ]
 #  - [ "right_ankle_link", "R_Ankle" ]
-  - [ "link_left_arm_2", "L_Shoulder" ]
-  - [ "link_left_arm_3", "L_Elbow" ]
-  - [ "ee_body_l", "L_Hand" ]
-  - [ "link_right_arm_2", "R_Shoulder" ]
-  - [ "link_left_arm_3", "R_Elbow" ]
-  - [ "ee_body_r", "R_Hand" ]
-  - [ "head_1", "Head" ]
-#  - [ "left_toe_link", "L_Toe" ]
-#  - [ "right_toe_link", "R_Toe" ]
+  - [ "link_left_arm_1", "L_Shoulder" ]
+#  - [ "link_left_arm_3", "L_Elbow" ]
+  - [ "link_left_arm_6", "L_Hand" ]
+  - [ "link_right_arm_1", "R_Shoulder" ]
+#  - [ "link_right_arm_3", "R_Elbow" ]
+  - [ "link_right_arm_6", "R_Hand" ]
+  - [ "link_head_1", "Head" ]
+#  - [ "wheel_l", "L_Toe" ]
+#  - [ "wheel_r", "R_Toe" ]
 
 
 smpl_pose_modifier:

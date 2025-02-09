@@ -73,13 +73,13 @@ class Humanoid_Batch:
             self.has_freejoint = False
         
         self.dof_axis = torch.tensor(self.dof_axis)
-
-        for extend_config in cfg.extend_config:
-            self.body_names_augment += [extend_config.joint_name]
-            self._parents = torch.cat([self._parents, torch.tensor([self.body_names.index(extend_config.parent_name)]).to(device)], dim = 0)
-            self._offsets = torch.cat([self._offsets, torch.tensor([[extend_config.pos]]).to(device)], dim = 1)
-            self._local_rotation = torch.cat([self._local_rotation, torch.tensor([[extend_config.rot]]).to(device)], dim = 1)
-            self.num_extend_dof += 1
+        if hasattr(cfg, "extend_config"):
+            for extend_config in cfg.extend_config:
+                self.body_names_augment += [extend_config.joint_name]
+                self._parents = torch.cat([self._parents, torch.tensor([self.body_names.index(extend_config.parent_name)]).to(device)], dim = 0)
+                self._offsets = torch.cat([self._offsets, torch.tensor([[extend_config.pos]]).to(device)], dim = 1)
+                self._local_rotation = torch.cat([self._local_rotation, torch.tensor([[extend_config.rot]]).to(device)], dim = 1)
+                self.num_extend_dof += 1
             
         self.num_bodies = len(self.body_names)
         self.num_bodies_augment = len(self.body_names_augment)
@@ -174,18 +174,19 @@ class Humanoid_Batch:
         
         
         wbody_rot = tRot.wxyz_to_xyzw(tRot.matrix_to_quaternion(wbody_mat))
-        if len(self.cfg.extend_config) > 0:
-            if return_full:
-                return_dict.global_velocity_extend = self._compute_velocity(wbody_pos, dt) 
-                return_dict.global_angular_velocity_extend = self._compute_angular_velocity(wbody_rot, dt)
+        if hasattr(self.cfg, "extend_config"):
+            if len(self.cfg.extend_config) > 0:
+                if return_full:
+                    return_dict.global_velocity_extend = self._compute_velocity(wbody_pos, dt) 
+                    return_dict.global_angular_velocity_extend = self._compute_angular_velocity(wbody_rot, dt)
+                    
+                return_dict.global_translation_extend = wbody_pos.clone()
+                return_dict.global_rotation_mat_extend = wbody_mat.clone()
+                return_dict.global_rotation_extend = wbody_rot
                 
-            return_dict.global_translation_extend = wbody_pos.clone()
-            return_dict.global_rotation_mat_extend = wbody_mat.clone()
-            return_dict.global_rotation_extend = wbody_rot
-            
-            wbody_pos = wbody_pos[..., :self.num_bodies, :]
-            wbody_mat = wbody_mat[..., :self.num_bodies, :, :]
-            wbody_rot = wbody_rot[..., :self.num_bodies, :]
+                wbody_pos = wbody_pos[..., :self.num_bodies, :]
+                wbody_mat = wbody_mat[..., :self.num_bodies, :, :]
+                wbody_rot = wbody_rot[..., :self.num_bodies, :]
 
         
         return_dict.global_translation = wbody_pos

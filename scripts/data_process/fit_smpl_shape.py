@@ -53,7 +53,12 @@ def main(cfg: DictConfig) -> None:
     trans = torch.zeros([1, 3])
     beta = torch.zeros([1, 10])
     verts, joints = smpl_parser_n.get_joints_verts(pose_aa_stand, beta, trans)
-    offset = joints[:, 0] - trans
+    root_pos = joints[:, 0]
+
+    if hasattr(cfg.robot, "mobile_base"):
+        if cfg.robot.mobile_base:
+            root_pos = torch.zeros_like(root_pos)
+    offset = root_pos - trans
     root_trans_offset = trans + offset
 
     fk_return = humanoid_fk.fk_batch(pose_aa_robot[None,], root_trans_offset[None, 0:1])
@@ -68,8 +73,11 @@ def main(cfg: DictConfig) -> None:
     for iteration in pbar:
         verts, joints = smpl_parser_n.get_joints_verts(pose_aa_stand, shape_new, trans[0:1])  # fitted smpl shape
         root_pos = joints[:, 0]
+        if hasattr(cfg.robot, "mobile_base"):
+            if cfg.robot.mobile_base:
+                root_pos = torch.zeros_like(root_pos)
         joints = (joints - joints[:, 0]) * scale + root_pos
-        if len(cfg.robot.extend_config) > 0:
+        if hasattr(cfg.robot, "extend_config"):
             diff = fk_return.global_translation_extend[:, :, robot_joint_pick_idx] - joints[:, smpl_joint_pick_idx]
         else:
             diff = fk_return.global_translation[:, :, robot_joint_pick_idx] - joints[:, smpl_joint_pick_idx]
@@ -113,9 +121,9 @@ def main(cfg: DictConfig) -> None:
         ax.legend()
         plt.show()
 
-    os.makedirs(f"data/{cfg.robot.humanoid_type}", exist_ok=True)
+    os.makedirs(f"phc/data/{cfg.robot.humanoid_type}", exist_ok=True)
     joblib.dump((shape_new.detach(), scale),
-                f"data/{cfg.robot.humanoid_type}/shape_optimized_v1.pkl")  # V2 has hip joints
+                f"phc/data/{cfg.robot.humanoid_type}/shape_optimized_v1.pkl")  # V2 has hip joints
 
 
 if __name__ == "__main__":
