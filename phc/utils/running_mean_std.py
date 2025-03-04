@@ -92,6 +92,8 @@ class RunningMeanStd(nn.Module):
             if self.norm_only:
                 y = input / torch.sqrt(current_var.float() + self.epsilon)
             else:
+                current_mean = current_mean.to(input.device)
+                current_var = current_var.to(input.device)
                 y = (input - current_mean.float()) / torch.sqrt(current_var.float() + self.epsilon)
                 y = torch.clamp(y, min=-5.0, max=5.0)
 

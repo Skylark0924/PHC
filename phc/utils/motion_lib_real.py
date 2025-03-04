@@ -276,6 +276,7 @@ class MotionLibReal(MotionLibBase):
         if offset is None:
             rg_pos = (1.0 - blend_exp) * rg_pos0 + blend_exp * rg_pos1  # ZL: apply offset
         else:
+            offset = offset.to(rg_pos0.device)
             rg_pos = (1.0 - blend_exp) * rg_pos0 + blend_exp * rg_pos1 + offset[..., None, :]  # ZL: apply offset
 
         body_vel = (1.0 - blend_exp) * body_vel0 + blend_exp * body_vel1

@@ -61,10 +61,10 @@ asset:
 #  assetFileName: "phc/data/assets/robot/rby1/rby1_20250207.xml"
   assetFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_20250207.xml"
 
-#  urdfFileName: "phc/data/assets/robot/unitree_h1/urdf/h1.urdf"
+  urdfFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_20250207.xml"
 
 ##### Config for extension
-# extend_config:
+#extend_config:
 #  - joint_name: "left_hand_link"
 #    parent_name: "left_elbow_link"
 #    pos: [ 0.3, 0.0, 0.0 ]

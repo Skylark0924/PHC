@@ -1,5 +1,5 @@
 task: HumanoidIm
-motion_file: "sample_data/dance_sample_g1.pkl"
+motion_file: "phc/data/y1/v1/singles/0-Transitions_mocap_mazen_c3d_dance_stand_poses.pkl"
 num_envs: 1024
 env_spacing: 5
 episode_length: 300
@@ -48,15 +48,22 @@ power_coefficient: 0.0005
 
 powerScale: 1.0
 
-stateInit: "Random"  
+stateInit: "Random"
 hybridInitProb: 0.5
 numAMPObsSteps: 10
 
 local_root_obs: True
 root_height_obs: True
-key_bodies: ["left_ankle_roll_link", "right_ankle_roll_link", "left_zero_link",  "right_zero_link"]
-contact_bodies: ["left_ankle_roll_link", "right_ankle_roll_link"]
-reset_bodies:  ['pelvis', 'left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link', 'torso_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link', 'left_zero_link', 'left_one_link', 'left_two_link', 'left_three_link', 'left_four_link', 'left_five_link', 'left_six_link', 'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link', 'right_zero_link', 'right_one_link', 'right_two_link', 'right_three_link', 'right_four_link', 'right_five_link', 'right_six_link']
+key_bodies: ["link_left_arm_6", "link_right_arm_6"]
+contact_bodies: ["wheel_l", "wheel_r"]
+reset_bodies:  [
+  'base','wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4', 'link_torso_5',
+  'link_head_1', 'link_head_2',
+  'link_left_arm_0', 'link_left_arm_1', 'link_left_arm_2', 'link_left_arm_3', 'link_left_arm_4', 'link_left_arm_5',
+  'link_left_arm_6', 'ee_finger_l1', 'ee_finger_l2',
+  'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
+  'link_right_arm_5', 'link_right_arm_6', 'ee_finger_r1', 'ee_finger_r2'
+]
 terminationHeight: 0.15
 enableEarlyTermination: True
 terminationDistance: 0.25

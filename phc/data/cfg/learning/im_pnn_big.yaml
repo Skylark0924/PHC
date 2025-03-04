@@ -20,7 +20,7 @@ params:
           name: default
         sigma_init:
           name: const_initializer
-          val: -2.9
+          val: -1.7
         fixed_sigma: True
         learn_sigma: False
 
@@ -70,6 +70,7 @@ params:
     e_clip: 0.2
     horizon_length: 32
     minibatch_size: 16384
+#    minibatch_size: 512
     mini_epochs: 6
     critic_coef: 5
     clip_value: False
@@ -80,6 +81,7 @@ params:
     amp_replay_keep_prob: 0.01
     amp_batch_size: 512
     amp_minibatch_size: 4096
+#    amp_minibatch_size: 512
     disc_coef: 5
     disc_logit_reg: 0.01
     disc_grad_penalty: 5
