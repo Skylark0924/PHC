@@ -1,5 +1,5 @@
 task: HumanoidIm
-motion_file: "phc/data/y1/v1/singles/0-Transitions_mocap_mazen_c3d_dance_stand_poses.pkl"
+motion_file: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/examples/data/amass/y1/v1/0-Transitions_mocap_mazen_c3d_dance_stand_poses.pkl"
 num_envs: 1024
 env_spacing: 5
 episode_length: 300

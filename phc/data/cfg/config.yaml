@@ -13,7 +13,8 @@ defaults:
 
 project_name: "PHC"
 notes: "Default Notes"
-exp_name: &exp_name humanoid_smpl
+exp_name: &exp_name humanoid_y1
+#exp_name: &exp_name humanoid_smpl
 headless: True
 seed: 0
 no_log: False
