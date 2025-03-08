@@ -81,7 +81,7 @@ class HumanoidTeleop(humanoid_im.HumanoidIm):
         for i in range(self.control_freq_inv):
             self.render(i = i) 
             if not self.paused and self.enable_viewer_sync:
-                if self.humanoid_type in ['h1', 'g1']:
+                if self.humanoid_type in ['h1', 'g1', 'y1']:
                     self.torques = self._compute_torques(actions)
                     self.gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(self.torques))
                     self.gym.simulate(self.sim)
@@ -218,7 +218,7 @@ class HumanoidTeleop(humanoid_im.HumanoidIm):
 
          
 
-        if self.humanoid_type in ['h1', 'g1',]:
+        if self.humanoid_type in ['h1', 'g1', 'y1']:
             extend_curr_pos = torch_utils.my_quat_rotate(body_rot[:, self.extend_body_parent_ids].reshape(-1, 4), self.extend_body_pos_in_parent.reshape(-1, 3)).view(self.num_envs, -1, 3) + body_pos[:, self.extend_body_parent_ids]
             body_pos_extend = torch.cat([body_pos, extend_curr_pos], dim=1)
             body_rot_extend = torch.cat([body_rot, body_rot[:, self.extend_body_parent_ids]], dim=1)

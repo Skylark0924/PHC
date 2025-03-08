@@ -55,7 +55,7 @@ numAMPObsSteps: 10
 local_root_obs: True
 root_height_obs: True
 key_bodies: ["link_left_arm_6", "link_right_arm_6"]
-contact_bodies: ["wheel_l", "wheel_r"]
+contact_bodies: ["wheel_l", "wheel_r", 'base']
 reset_bodies:  [
   'base','wheel_l', 'wheel_r', 'link_torso_0', 'link_torso_1', 'link_torso_2', 'link_torso_3', 'link_torso_4', 'link_torso_5',
   'link_head_1', 'link_head_2',
@@ -64,7 +64,7 @@ reset_bodies:  [
   'link_right_arm_0', 'link_right_arm_1', 'link_right_arm_2', 'link_right_arm_3', 'link_right_arm_4',
   'link_right_arm_5', 'link_right_arm_6', 'ee_finger_r1', 'ee_finger_r2'
 ]
-terminationHeight: 0.15
+terminationHeight: 0.0
 enableEarlyTermination: True
 terminationDistance: 0.25
 
