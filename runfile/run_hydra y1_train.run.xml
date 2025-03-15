@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="run_hydra y1_train" type="PythonConfigurationType" factoryName="Python" folderName="New Folder" singleton="false">
+    <module name="PHC" />
+    <option name="ENV_FILES" value="" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+    </envs>
+    <option name="SDK_HOME" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="true" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phc/run_hydra.py" />
+    <option name="PARAMETERS" value="project_name=Robot_IM robot=rb_y1 env=env_im_y1_phc env.num_envs=1024 learning=im_pnn_big exp_name=y1_03082057 sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 headless=True learning.params.config.amp_minibatch_size=4096 learning.params.config.minibatch_size=16384" />
+    <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="false" />
+    <option name="MODULE_MODE" value="false" />
+    <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
+    <method v="2" />
+  </configuration>
+</component>

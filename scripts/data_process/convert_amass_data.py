@@ -20,7 +20,7 @@ from smpl_sim.smpllib.smpl_local_robot import SMPL_Robot as LocalRobot
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action="store_true")
-    parser.add_argument("--path", type=str, default="/home/ubuntu/Downloads/AMASS")
+    parser.add_argument("--path", type=str, default="/home/ubuntu/Data/AMASS")
     args = parser.parse_args()
     
     process_split = "train"
@@ -64,10 +64,14 @@ if __name__ == "__main__":
     for data_path in tqdm(all_pkls):
         bound = 0
         splits = data_path.split("/")[6:]
-        key_name_dump = "0-" + "_".join(splits).replace(".npz", "")
-        
-        if (not splits[0] in process_set):
+        # key_name_dump = "0-" + "_".join(splits).replace(".npz", "")
+        key_name_dump = "0-Transitions_mocap_mazen_c3d_dance_stand_poses"
+
+        if "dance_stand_poses" not in data_path:
             continue
+
+        # if (not splits[0] in process_set):
+        #     continue
         
         if key_name_dump in amass_occlusion:
             issue = amass_occlusion[key_name_dump]["issue"]
@@ -146,8 +150,9 @@ if __name__ == "__main__":
 
         amass_full_motion_dict[key_name_dump] = new_motion_out
         
-    # import ipdb; ipdb.set_trace()
-    if upright_start:
-        joblib.dump(amass_full_motion_dict, "phc/data/amass/amass_train_take6_upright.pkl", compress=True)
-    else:
-        joblib.dump(amass_full_motion_dict, "phc/data/amass/amass_train_take6.pkl", compress=True)
+    # # import ipdb; ipdb.set_trace()
+    # if upright_start:
+    #     joblib.dump(amass_full_motion_dict, "phc/data/amass/amass_train_take6_upright.pkl", compress=True)
+    # else:
+    #     joblib.dump(amass_full_motion_dict, "phc/data/amass/amass_train_take6.pkl", compress=True)
+    joblib.dump(amass_full_motion_dict, "phc/data/amass/0-Transitions_mocap_mazen_c3d_dance_stand_poses.pkl", compress=True)

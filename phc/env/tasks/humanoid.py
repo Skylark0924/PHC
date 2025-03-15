@@ -1205,11 +1205,11 @@ class Humanoid(BaseTask):
         elif self.humanoid_type in ['y1']:
             if self.cfg.env.get("pd_v", 1) == 1:
                 self.p_gains = to_torch(
-                    [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,
-                     1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,
-                     1000.0, 1000.0, 1000.0, 1000.0], device=self.device)
-                    # [0, 0, 300, 300, 300, 300., 300, 300, 20, 20, 100, 100, 100, 100, 60, 60, 60, 10, 10,
-                    #  100, 100, 100, 100, 60, 60, 60, 10, 10], device=self.device)
+                    # [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,
+                    #  1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,
+                    #  1000.0, 1000.0, 1000.0, 1000.0], device=self.device)
+                    [0, 0, 2000, 2000, 2000, 2000., 2000, 2000, 20, 20, 200, 200, 200, 200, 60, 60, 60, 10, 10,
+                     200, 200, 200, 200, 60, 60, 60, 10, 10], device=self.device)
                     # [0.0, 0.0, 300.0, 200.0, 200.0, 300.0, 120.0, 200.0, 200.0, 60.0, 60.0, 40.0, 40.0, 40.0, 40.0,
                     #  40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0], device=self.device)
                 # left_wheel: 0
@@ -1241,29 +1241,26 @@ class Humanoid(BaseTask):
                 # gripper_finger_r1: 26
                 # gripper_finger_r2: 27
                 self.d_gains = to_torch(
-                    # [5.0, 5.0, 7.5, 5.0, 5.0, 7.5, 3.0, 5.0, 5.0, 1.5, 1.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                    #  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
-                    # device=self.device)
-                [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
-                 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                device = self.device)
-                # self.torque_limits_hard_coded = to_torch([
-                #     88, 88, 88,  # Left hip (pitch, roll, yaw)
-                #     139,  # Left knee
-                #     40, 40,  # Left ankle (pitch, roll)
-                #     88, 88, 88,  # Right hip (pitch, roll, yaw)
-                #     139,  # Right knee
-                #     40, 40,  # Right ankle (pitch, roll)
-                #     88,  # Torso
-                #     20, 20, 20,  # Left shoulder (pitch, roll, yaw)
-                #     20,  # Left elbow pitch
-                #     20,  # Left elbow roll
-                #     0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,  # Left hand (zero to six)
-                #     20, 20, 20,  # Right shoulder (pitch, roll, yaw)
-                #     20,  # Right elbow pitch
-                #     20,  # Right elbow roll
-                #     0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7  # Right hand (zero to six)
-                # ], device=self.device)
+                    [5.0, 5.0, 7.5, 5.0, 5.0, 7.5, 3.0, 5.0, 5.0, 1.5, 1.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                     1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+                    device=self.device)
+                # [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+                #  100, 100, 100, 100, 100, 100, 100, 100, 100],
+                # device = self.device)
+                self.torque_limits_hard_coded = to_torch([
+                    50, 50,  # left_wheel(0), right_wheel(1) - 使用默认值
+                    270, 270, 270,  # torso_0(2), torso_1(3), torso_2(4)
+                    120, 120, 120,  # torso_3(5), torso_4(6), torso_5(7)
+                    50, 50,  # head_0(8), head_1(9) - 使用默认值
+                    70, 70, 70,  # left_arm_0(10), left_arm_1(11), left_arm_2(12)
+                    40,  # left_arm_3(13)
+                    10, 10, 10,  # left_arm_4(14), left_arm_5(15), left_arm_6(16)
+                    10, 10,  # gripper_finger_l1(17), gripper_finger_l2(18)
+                    70, 70, 70,  # right_arm_0(19), right_arm_1(20), right_arm_2(21)
+                    40,  # right_arm_3(22)
+                    10, 10, 10,  # right_arm_4(23), right_arm_5(24), right_arm_6(25)
+                    10, 10  # gripper_finger_r1(26), gripper_finger_r2(27)
+                ], device=self.device)
             elif self.cfg.env.get("pd_v", 1) == 2:
                 self.p_gains = to_torch(
                     [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0,

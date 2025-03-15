@@ -63,7 +63,7 @@ def main(cfg : DictConfig) -> None:
     
     curr_start, num_motions, motion_id, motion_acc, time_step, dt, paused = 0, 1, 0, set(), 0, 1/30, False
     
-    motion_file = f"phc/data/{cfg.robot.humanoid_type}/v1/singles/{cfg.motion_name}.pkl"
+    motion_file = f"phc/data/{cfg.robot.humanoid_type}/v1/singles/0-continuous_movement_largebox1_optitrack.pkl"
     print(motion_file)
     motion_data = joblib.load(motion_file)
     motion_data_keys = list(motion_data.keys())
