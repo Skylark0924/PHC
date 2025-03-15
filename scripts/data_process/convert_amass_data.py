@@ -67,7 +67,7 @@ if __name__ == "__main__":
         # key_name_dump = "0-" + "_".join(splits).replace(".npz", "")
         key_name_dump = "0-Transitions_mocap_mazen_c3d_dance_stand_poses"
 
-        if "dance_stand_poses" not in data_path:
+        if data_path != "/home/ubuntu/Data/AMASS/Transitions/Transitions_mocap/mazen_c3d/dance_stand_poses.npz":
             continue
 
         # if (not splits[0] in process_set):
@@ -127,11 +127,11 @@ if __name__ == "__main__":
                     root_trans_offset,
                     is_local=True)
         
-        if robot_cfg['upright_start']:
-            pose_quat_global = (sRot.from_quat(new_sk_state.global_rotation.reshape(-1, 4).numpy()) * sRot.from_quat([0.5, 0.5, 0.5, 0.5]).inv()).as_quat().reshape(N, -1, 4)  # should fix pose_quat as well here...
+        # if robot_cfg['upright_start']:
+        pose_quat_global = (sRot.from_quat(new_sk_state.global_rotation.reshape(-1, 4).numpy()) * sRot.from_quat([0.5, 0.5, 0.5, 0.5]).inv()).as_quat().reshape(N, -1, 4)  # should fix pose_quat as well here...
 
-            new_sk_state = SkeletonState.from_rotation_and_root_translation(skeleton_tree, torch.from_numpy(pose_quat_global), root_trans_offset, is_local=False)
-            pose_quat = new_sk_state.local_rotation.numpy()
+        new_sk_state = SkeletonState.from_rotation_and_root_translation(skeleton_tree, torch.from_numpy(pose_quat_global), root_trans_offset, is_local=False)
+        pose_quat = new_sk_state.local_rotation.numpy()
 
 
         pose_quat_global = new_sk_state.global_rotation.numpy()
