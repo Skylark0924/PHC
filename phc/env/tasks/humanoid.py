@@ -1126,6 +1126,9 @@ class Humanoid(BaseTask):
         humanoid_limb_weight = torch.tensor(limb_lengths + masses)
         self.humanoid_limb_and_weights.append(humanoid_limb_weight)  # ZL: attach limb lengths and full body weight.
 
+        pd_scale = 1
+        dof_prop = self.gym.get_asset_dof_properties(humanoid_asset)
+
         if self.humanoid_type in ['h1']:
             if self.cfg.env.get("pd_v", 1) == 1:
                 self.p_gains = to_torch(

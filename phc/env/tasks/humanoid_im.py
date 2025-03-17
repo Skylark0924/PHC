@@ -213,7 +213,7 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
     def render(self, sync_frame_time = False, i = 0):
         super().render(sync_frame_time=sync_frame_time)
         
-        if self.viewer_o3d and self.control_i == 0:
+        if self.viewer_o3d:
             if self.humanoid_type in ["smpl", "smplh", "smplx"]:
                 assert(self._rigid_body_rot.shape[0] == 1)
                 if self._has_upright_start:

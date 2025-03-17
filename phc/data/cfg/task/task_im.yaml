@@ -1,0 +1,32 @@
+wb_decompose: False  # if True, decompose the whole body into parts
+wb_decompose_parameter:
+  parts: ["body"]
+use_synergy: False  # if True, use the synergy for the hand
+
+wdf:
+  enable: False
+  visualize: True
+  numFuncs: 16
+  domainMax: 1.0
+  domainMin: -1.0
+  forceTrain: False
+  trainEpochs: 1000
+  parallel: True
+  saveMeshDict: True
+  samplePoints: True
+  device:
+  assetRoot:
+  assetName:
+    - "unitree_h1_v2"
+  trainType:
+    - "rdf"
+  baseLink:
+    - "pelvis"
+  color:
+    - "green"
+  mergeWDF: True
+
+manipulability:
+  enable: False
+  visualize: False
+  LinkNames: [ "Link7" ]

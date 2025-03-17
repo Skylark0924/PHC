@@ -48,7 +48,7 @@ class MotionLibSMPL(MotionLibBase):
     def __init__(self, motion_lib_cfg):
         super().__init__(motion_lib_cfg = motion_lib_cfg)
         
-        data_dir = "data/smpl"
+        data_dir = "phc/data/smpl"
         
         if osp.exists(data_dir):
             if motion_lib_cfg.smpl_type == "smpl":
