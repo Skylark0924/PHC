@@ -59,8 +59,8 @@ asset:
   assetRoot: "./"
   # assetFileName: "phc/data/assets/robot/rby1/rby1.xml"
 #  assetFileName: "phc/data/assets/robot/rby1/rby1_20250207.xml"
-  assetFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_20250207.xml"
-  urdfFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_20250207.xml"
+  assetFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rb_y1/y1_20250207.xml"
+  urdfFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rb_y1/y1_20250207.xml"
 #  assetFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_pt_no_joint_torque_limit.xml"
 #  urdfFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_pt_no_joint_torque_limit.xml"
 ##### Config for extension

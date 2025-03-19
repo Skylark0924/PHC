@@ -14,7 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phc/run_hydra.py" />
-    <option name="PARAMETERS" value="project_name=Robot_IM robot=rb_y1 env=env_im_y1_phc env.num_envs=1024 learning=im_pnn_big exp_name=y1_03082057 sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 headless=True learning.params.config.amp_minibatch_size=4096 learning.params.config.minibatch_size=16384" />
+    <option name="PARAMETERS" value="project_name=Robot_IM robot=rb_y1 env=env_im_y1_phc env.num_envs=1024 learning=im_pnn_big exp_name=y1_03082057 sim=robot_sim control=robot_control learning.params.network.space.continuous.sigma_init.val=-1.7 headless=True learning.params.config.amp_minibatch_size=4096 learning.params.config.minibatch_size=16384 env.motion_file=phc/data/y1/v1/singles/0-Transitions_mocap_mazen_c3d_dance_stand_poses.pkl" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

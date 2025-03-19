@@ -59,7 +59,7 @@ asset:
   assetRoot: "./"
   # assetFileName: "phc/data/assets/robot/rby1/rby1.xml"
 #  assetFileName: "phc/data/assets/robot/rby1/rby1_20250207.xml"
-  assetFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_20250207.xml"
+  assetFileName: "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rb_y1/y1_20250207.xml"
 
 #  urdfFileName: "phc/data/assets/robot/unitree_h1/urdf/h1.urdf"
 

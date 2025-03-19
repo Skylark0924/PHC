@@ -3,8 +3,8 @@
 task: HumanoidIm
 project_name: "PHC"
 notes:  ""
-motion_file: ""
-num_envs: 3072
+motion_file: "sample_data/amass_isaac_standing_upright_slim.pkl"
+num_envs: 1024
 env_spacing: 5
 episode_length: 300
 is_flag_run: False

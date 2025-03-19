@@ -20,7 +20,6 @@ import learning.common_agent as common_agent
 from tensorboardX import SummaryWriter
 import copy
 from phc.utils.torch_utils import project_to_norm
-import learning.amp_datasets as amp_datasets
 from phc.learning.loss_functions import kl_multi
 from smpl_sim.utils.math_utils import LinearAnneal
 

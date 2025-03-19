@@ -920,7 +920,7 @@ class Humanoid(BaseTask):
             actuator_props = self.gym.get_asset_actuator_properties(humanoid_asset)
 
             # motor_efforts = [prop.motor_effort for prop in actuator_props]
-            motor_efforts = [1000] * 19
+            motor_efforts = [350] * 19
 
             # create force sensors at the feet
             right_foot_idx = self.gym.find_asset_rigid_body_index(humanoid_asset, self.cfg.robot.right_foot_name)
@@ -1080,7 +1080,7 @@ class Humanoid(BaseTask):
         asset_file = self.cfg.robot.asset["assetFileName"]
         if (asset_file == "mjcf/ov_humanoid.xml" or asset_file == "mjcf/ov_humanoid_sword_shield.xml"):
             char_h = 0.927
-        elif asset_file == "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rby1/rby1_20250207.xml":
+        elif asset_file == "/home/ubuntu/Github/Xianova_Robotics/Rofunc-secret/rofunc/simulator/assets/mjcf/rb_y1/y1_20250207.xml":
             char_h = 0.
         else:
             char_h = 0.89
