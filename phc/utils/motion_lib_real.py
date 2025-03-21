@@ -72,17 +72,10 @@ class MotionLibReal(MotionLibBase):
             trans[..., 2] -= height_diff
             
             return trans, height_diff
-        
-    def load_motions(self, skeleton_trees, gender_betas, limb_weights, random_sample=True, start_idx=0, max_len=-1, target_heading = None):
-        # load motion load the same number of motions as there are skeletons (humanoids)
-        # if "gts" in self.__dict__:
-        #     del self.gts, self.grs, self.lrs, self.grvs, self.gravs, self.gavs, self.gvs, self.dvs
-        #     del self._motion_lengths, self._motion_fps, self._motion_dt, self._motion_num_frames, self._motion_bodies, self._motion_aa
-        #     if "gts_t" in self.__dict__:
-        #         self.gts_t, self.grs_t, self.gvs_t
-        #     if flags.real_traj:
-        #         del self.q_gts, self.q_grs, self.q_gavs, self.q_gvs
 
+    def load_motions(self, skeleton_trees, gender_betas, limb_weights, random_sample=True, start_idx=0, max_len=-1,
+                     target_heading=None):
+        # load motion load the same number of motions as there are skeletons (humanoids)
         motions = []
         _motion_lengths = []
         _motion_fps = []
@@ -90,7 +83,7 @@ class MotionLibReal(MotionLibBase):
         _motion_num_frames = []
         _motion_bodies = []
         _motion_aa = []
-        
+
         if flags.real_traj:
             self.q_gts, self.q_grs, self.q_gavs, self.q_gvs = [], [], [], []
 
@@ -102,15 +95,20 @@ class MotionLibReal(MotionLibBase):
         num_motion_to_load = len(skeleton_trees)
 
         if random_sample:
-            sample_idxes = torch.multinomial(self._sampling_prob, num_samples=num_motion_to_load, replacement=True).to(self._device)
+            sample_idxes = torch.multinomial(self._sampling_prob, num_samples=num_motion_to_load, replacement=True).to(
+                self._device)
         else:
-            sample_idxes = torch.remainder(torch.arange(len(skeleton_trees)) + start_idx, self._num_unique_motions ).to(self._device)
+            sample_idxes = torch.remainder(torch.arange(len(skeleton_trees)) + start_idx, self._num_unique_motions).to(
+                self._device)
 
         # import ipdb; ipdb.set_trace()
         self._curr_motion_ids = sample_idxes
-        self.one_hot_motions = torch.nn.functional.one_hot(self._curr_motion_ids, num_classes = self._num_unique_motions).to(self._device)  # Testing for obs_v5
+        self.one_hot_motions = torch.nn.functional.one_hot(self._curr_motion_ids,
+                                                           num_classes=self._num_unique_motions).to(
+            self._device)  # Testing for obs_v5
         self.curr_motion_keys = self._motion_data_keys[sample_idxes]
-        self._sampling_batch_prob = self._sampling_prob[self._curr_motion_ids] / self._sampling_prob[self._curr_motion_ids].sum()
+        self._sampling_batch_prob = self._sampling_prob[self._curr_motion_ids] / self._sampling_prob[
+            self._curr_motion_ids].sum()
 
         print("\n****************************** Current motion keys ******************************")
         print("Sampling motion:", sample_idxes[:30])
@@ -122,7 +120,6 @@ class MotionLibReal(MotionLibBase):
 
         motion_data_list = self._motion_data_list[sample_idxes.cpu().numpy()]
         torch.set_num_threads(1)
-        
 
         manager = mp.Manager()
         queue = manager.Queue()
@@ -132,26 +129,77 @@ class MotionLibReal(MotionLibBase):
             num_jobs = 1
         if flags.debug:
             num_jobs = 1
-        
+
         res_acc = {}  # using dictionary ensures order of the results.
         jobs = motion_data_list
         chunk = np.ceil(len(jobs) / num_jobs).astype(int)
         ids = np.arange(len(jobs))
 
-        jobs = [(ids[i:i + chunk], jobs[i:i + chunk], skeleton_trees[i:i + chunk], gender_betas[i:i + chunk], self.fix_height, self.mesh_parsers, target_heading, max_len, self.m_cfg) for i in range(0, len(jobs), chunk)]
-        job_args = [jobs[i] for i in range(len(jobs))]
-        for i in range(1, len(jobs)):
-            worker_args = (*job_args[i], queue, i)
-            worker = mp.Process(target=self.load_motion_with_skeleton, args=worker_args)
-            worker.start()
-        res_acc.update(self.load_motion_with_skeleton(*jobs[0], None, 0))
+        # 创建唯一的motion-skeleton组合的字典
+        unique_combinations = {}
+        for i in range(len(jobs)):
+            start_idx = i * chunk
+            end_idx = min(start_idx + chunk, len(jobs))
+            curr_ids = ids[start_idx:end_idx]
+            curr_jobs = jobs[start_idx:end_idx]
+            curr_skeletons = skeleton_trees[start_idx:end_idx]
+            curr_betas = gender_betas[start_idx:end_idx]
 
-        for i in tqdm(range(len(jobs) - 1)):
-            try:
-                res = queue.get()
-                res_acc.update(res)
-            except Exception as e:
-                logging.error(f"Error in worker process {i}: {e}")
+            # 使用motion id的字符串表示和skeleton的hash作为key
+            for j in range(len(curr_ids)):
+                motion_str = str(id(curr_jobs[j]))  # 使用对象的内存地址作为唯一标识
+                skeleton_hash = hash(str(curr_skeletons[j].node_names))
+                key = f"{motion_str}_{skeleton_hash}"  # 使用字符串作为key
+
+                if key not in unique_combinations:
+                    unique_combinations[key] = {
+                        'id': curr_ids[j],
+                        'motion': curr_jobs[j],
+                        'skeleton': curr_skeletons[j],
+                        'beta': curr_betas[j],
+                        'similar_envs': []
+                    }
+                unique_combinations[key]['similar_envs'].append(curr_ids[j])
+
+        # 只处理唯一的组合
+        unique_jobs = []
+        unique_mapping = {}
+        for key, data in unique_combinations.items():
+            unique_jobs.append((
+                [data['id']],
+                [data['motion']],
+                [data['skeleton']],
+                [data['beta']],
+                self.fix_height,
+                self.mesh_parsers,
+                target_heading,
+                max_len,
+                self.m_cfg
+            ))
+            unique_mapping[data['id']] = data['similar_envs']
+
+        print(f"Original jobs: {len(jobs)}, Unique combinations: {len(unique_jobs)}")
+
+        # 处理唯一的组合
+        job_args = unique_jobs
+        if len(job_args) > 1:
+            for i in range(1, len(job_args)):
+                worker_args = (*job_args[i], queue, i)
+                worker = mp.Process(target=self.load_motion_with_skeleton, args=worker_args)
+                worker.start()
+        res_acc.update(self.load_motion_with_skeleton(*job_args[0], None, 0))
+
+        for i in tqdm(range(len(job_args) - 1)):
+            res = queue.get()
+            res_acc.update(res)
+
+        # 复制结果给使用相同配置的环境
+        final_res = {}
+        for orig_id, result in res_acc.items():
+            for target_id in unique_mapping[orig_id]:
+                final_res[target_id] = result
+
+        res_acc = final_res
 
         for f in tqdm(range(len(res_acc))):
             motion_file_data, curr_motion = res_acc[f]
@@ -163,8 +211,7 @@ class MotionLibReal(MotionLibBase):
 
             num_frames = curr_motion.global_rotation.shape[0]
             curr_len = 1.0 / motion_fps * (num_frames - 1)
-            
-            
+
             if "beta" in motion_file_data:
                 _motion_aa.append(motion_file_data['pose_aa'].reshape(-1, self.num_joints * 3))
                 _motion_bodies.append(curr_motion.gender_beta)
@@ -177,15 +224,15 @@ class MotionLibReal(MotionLibBase):
             _motion_num_frames.append(num_frames)
             motions.append(curr_motion)
             _motion_lengths.append(curr_len)
-            
+
             if flags.real_traj:
                 self.q_gts.append(curr_motion.quest_motion['quest_trans'])
                 self.q_grs.append(curr_motion.quest_motion['quest_rot'])
                 self.q_gavs.append(curr_motion.quest_motion['global_angular_vel'])
                 self.q_gvs.append(curr_motion.quest_motion['linear_vel'])
-                
+
             del curr_motion
-            
+
         self._motion_lengths = torch.tensor(_motion_lengths, device=self._device, dtype=torch.float32)
         self._motion_fps = torch.tensor(_motion_fps, device=self._device, dtype=torch.float32)
         self._motion_bodies = torch.stack(_motion_bodies).to(self._device).type(torch.float32)
@@ -204,16 +251,16 @@ class MotionLibReal(MotionLibBase):
         self.gavs = torch.cat([m.global_angular_velocity for m in motions], dim=0).float().to(self._device)
         self.gvs = torch.cat([m.global_velocity for m in motions], dim=0).float().to(self._device)
         self.dvs = torch.cat([m.dof_vels for m in motions], dim=0).float().to(self._device)
-        
+
         if "global_translation_extend" in motions[0].__dict__:
             self.gts_t = torch.cat([m.global_translation_extend for m in motions], dim=0).float().to(self._device)
             self.grs_t = torch.cat([m.global_rotation_extend for m in motions], dim=0).float().to(self._device)
             self.gvs_t = torch.cat([m.global_velocity_extend for m in motions], dim=0).float().to(self._device)
             self.gavs_t = torch.cat([m.global_angular_velocity_extend for m in motions], dim=0).float().to(self._device)
-        
+
         if "dof_pos" in motions[0].__dict__:
             self.dof_pos = torch.cat([m.dof_pos for m in motions], dim=0).float().to(self._device)
-        
+
         if flags.real_traj:
             self.q_gts = torch.cat(self.q_gts, dim=0).float().to(self._device)
             self.q_grs = torch.cat(self.q_grs, dim=0).float().to(self._device)

@@ -912,7 +912,10 @@ class Humanoid(BaseTask):
             asset_options.angular_damping = 0.01
             asset_options.max_angular_velocity = 100.0
             asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
-            asset_options.fix_base_link = True
+            if self.humanoid_type == 'y1':
+                asset_options.fix_base_link = True
+            else:
+                asset_options.fix_base_link = False
             asset_options.replace_cylinder_with_capsule = True
 
             humanoid_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
