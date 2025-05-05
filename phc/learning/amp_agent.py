@@ -13,7 +13,7 @@ from torch import optim
 import torch
 from torch import nn
 from phc.env.tasks.humanoid_amp_task import HumanoidAMPTask
-
+import numpy as np
 import learning.replay_buffer as replay_buffer
 import learning.common_agent as common_agent
 
@@ -50,14 +50,14 @@ class AMPAgent(common_agent.CommonAgent):
         else:
             self._disc_reward_mean_std = None
 
-        self.temp_running_mean = self.vec_env.env.task.temp_running_mean # use temp running mean to make sure the obs used for training is the same as calc gradient.
+        self.temp_running_mean = self.vec_env.env.temp_running_mean # use temp running mean to make sure the obs used for training is the same as calc gradient.
 
-        kin_lr = float(self.vec_env.env.task.kin_lr)
+        kin_lr = float(self.vec_env.env.kin_lr)
         
         # ZL Hack
-        if self.vec_env.env.task.fitting:
+        if self.vec_env.env.fitting:
             print("#################### Fitting and freezing!! ####################")
-            # checkpoint = torch_ext.load_checkpoint(self.vec_env.env.task.models_path[0])
+            # checkpoint = torch_ext.load_checkpoint(self.vec_env.env.models_path[0])
             # self.set_stats_weights(checkpoint)  # loads mean std. essential for distilling knowledge. will not load if has a shape mismatch.
             self.freeze_state_weights()  # freeze the mean stds.
             # load_my_state_dict(self.model.state_dict(), checkpoint['model'])  # loads everything (model, std, ect.). that can be load from the last model.
@@ -266,7 +266,7 @@ class AMPAgent(common_agent.CommonAgent):
             self.current_rewards = self.current_rewards * not_dones.unsqueeze(1)
             self.current_lengths = self.current_lengths * not_dones
 
-            if (self.vec_env.env.task.viewer):
+            if (self.vec_env.env.viewer):
                 self._amp_debug(infos)
 
             done_indices = done_indices[:, 0]
@@ -307,7 +307,7 @@ class AMPAgent(common_agent.CommonAgent):
 
     def play_steps(self):
         self.set_eval()
-        humanoid_env = self.vec_env.env.task
+        humanoid_env = self.vec_env.env
 
         epinfos = []
         done_indices = []
@@ -315,7 +315,6 @@ class AMPAgent(common_agent.CommonAgent):
         terminated_flags = torch.zeros(self.num_actors, device=self.device)
         reward_raw = torch.zeros(1, device=self.device)
         for n in range(self.horizon_length):
-
             self.obs = self.env_reset(done_indices)
             self.experience_buffer.update_data('obses', n, self.obs['obs'])
 
@@ -367,7 +366,7 @@ class AMPAgent(common_agent.CommonAgent):
             self.current_rewards = self.current_rewards * not_dones.unsqueeze(1)
             self.current_lengths = self.current_lengths * not_dones
 
-            if (self.vec_env.env.task.viewer):
+            if (self.vec_env.env.viewer):
                 self._amp_debug(infos)
 
             done_indices = done_indices[:, 0]
@@ -505,10 +504,10 @@ class AMPAgent(common_agent.CommonAgent):
     def pre_epoch(self, epoch_num):
         # print("freeze running mean/std")
 
-        if self.vec_env.env.task.humanoid_type in ["smpl", "smplh", "smplx"]:
-            humanoid_env = self.vec_env.env.task
-            if (epoch_num > 1) and epoch_num % humanoid_env.shape_resampling_interval == 1: # + 1 to evade the evaluations. 
-            # if (epoch_num > 0) and epoch_num % humanoid_env.shape_resampling_interval == 0 and not (epoch_num % (self.save_freq)): # Remove the resampling for this. 
+        if self.vec_env.env.humanoid_type in ["smpl", "smplh", "smplx"]:
+            humanoid_env = self.vec_env.env
+            if (epoch_num > 1) and epoch_num % humanoid_env.shape_resampling_interval == 1: # + 1 to evade the evaluations.
+            # if (epoch_num > 0) and epoch_num % humanoid_env.shape_resampling_interval == 0 and not (epoch_num % (self.save_freq)): # Remove the resampling for this.
                 # Different from AMP, always resample motion no matter the motion type.
                 print("Resampling Shape")
                 humanoid_env.resample_motions()
@@ -522,13 +521,15 @@ class AMPAgent(common_agent.CommonAgent):
                 else:
                     self._task_reward_w = 0
                     self._disc_reward_w = 1
-
-        self.running_mean_std_temp = copy.deepcopy(self.running_mean_std)  # Freeze running mean/std, so that the actor does not use the updated mean/std
-        self.running_mean_std_temp.freeze()
+        
+        if self.normalize_input:
+            self.running_mean_std_temp = copy.deepcopy(self.running_mean_std)  # Freeze running mean/std, so that the actor does not use the updated mean/std
+            self.running_mean_std_temp.freeze()
 
     def post_epoch(self, epoch_num):
-        self.running_mean_std_temp = copy.deepcopy(self.running_mean_std)  # Unfreeze running mean/std
-        self.running_mean_std_temp.freeze()
+        if self.normalize_input:
+            self.running_mean_std_temp = copy.deepcopy(self.running_mean_std)  # Unfreeze running mean/std
+            self.running_mean_std_temp.freeze()
         
 
     def _preproc_obs(self, obs_batch, use_temp=False):
@@ -547,13 +548,15 @@ class AMPAgent(common_agent.CommonAgent):
             else:
                 obs_batch_out = self.running_mean_std(obs_batch_proc)  # running through mean std, but do not use its value. use temp
             obs_batch_out = torch.cat([obs_batch_out, obs_batch[:, self.running_mean_std.mean_size:]], dim=-1)
+        else:
+            obs_batch_out = obs_batch
 
         return obs_batch_out
 
     def calc_gradients(self, input_dict):
         
         self.set_train()
-        humanoid_env = self.vec_env.env.task
+        humanoid_env = self.vec_env.env
 
         value_preds_batch = input_dict['old_values']
         old_action_log_probs_batch = input_dict['old_logp_actions']
@@ -583,7 +586,7 @@ class AMPAgent(common_agent.CommonAgent):
         
         self.train_result = {}
         
-        batch_dict = {'is_train': True, 'amp_steps': self.vec_env.env.task._num_amp_obs_steps, \
+        batch_dict = {'is_train': True, 'amp_steps': self.vec_env.env._num_amp_obs_steps, \
             'prev_actions': actions_batch, 'obs': obs_batch_processed, 'amp_obs': amp_obs, 'amp_obs_replay': amp_obs_replay, 'amp_obs_demo': amp_obs_demo, \
                 "obs_orig": obs_batch
                 }
@@ -709,10 +712,10 @@ class AMPAgent(common_agent.CommonAgent):
         config = super()._build_net_config()
         config['amp_input_shape'] = self._amp_observation_space.shape
         
-        config['task_obs_size_detail'] = self.vec_env.env.task.get_task_obs_size_detail()
-        if self.vec_env.env.task.has_task:
-            config['self_obs_size'] = self.vec_env.env.task.get_self_obs_size()
-            config['task_obs_size'] = self.vec_env.env.task.get_task_obs_size()
+        config['task_obs_size_detail'] = self.vec_env.env.get_task_obs_size_detail()
+        if self.vec_env.env.has_task:
+            config['self_obs_size'] = self.vec_env.env.get_self_obs_size()
+            config['task_obs_size'] = self.vec_env.env.get_task_obs_size()
 
         return config
 
@@ -750,8 +753,8 @@ class AMPAgent(common_agent.CommonAgent):
         disc_demo_grad = disc_demo_grad[0]
 
         ### ZL Hack for zeroing out gradient penalty on the shape (406,)
-        # if self.vec_env.env.task.__dict__.get("smpl_humanoid", False):
-        #     humanoid_env = self.vec_env.env.task
+        # if self.vec_env.env.__dict__.get("smpl_humanoid", False):
+        #     humanoid_env = self.vec_env.env
         #     B, feat_dim = disc_demo_grad.shape
         #     shape_obs_dim = 17
         #     if humanoid_env.has_shape_obs:

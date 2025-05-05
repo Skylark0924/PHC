@@ -54,8 +54,9 @@ class AMPPNNBuilder(AMPBuilder):
             self.pnn = PNN(actor_mlp_args, output_size=kwargs['actions_num'], numCols=self.num_prim, has_lateral=self.has_lateral)
             self.pnn.freeze_pnn(self.training_prim)
 
-            self.running_mean = kwargs['mean_std'].running_mean
-            self.running_var = kwargs['mean_std'].running_var
+            if 'mean_std' in kwargs:
+                self.running_mean = kwargs['mean_std'].running_mean
+                self.running_var = kwargs['mean_std'].running_var
 
         def eval_actor(self, obs_dict):
             obs = obs_dict['obs']

@@ -120,6 +120,10 @@ class HumanoidIm(humanoid_amp_task.HumanoidAMPTask):
         self.vis_contact = False
         self._sampled_motion_ids = torch.arange(self.num_envs).to(self.device)
         self.create_o3d_viewer()
+        with open("/home/ubuntu/Desktop/test.txt", "w") as f:
+            from omegaconf import OmegaConf
+            import json 
+            json.dump(self.cfg, f, indent=4)
         return
     
     

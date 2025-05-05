@@ -22,7 +22,7 @@ class AMPPlayerContinuous(common_player.CommonPlayer):
 
         super().__init__(config)
 
-        # self.env.task.update_value_func(self._eval_critic, self._eval_actor)
+        # self.env.update_value_func(self._eval_critic, self._eval_actor)
         # import copy
         # self.orcale_model = copy.deepcopy(self.model)
         # checkpoint = torch_ext.load_checkpoint("output/dgx/smpl_im_master_singles_6_3/Humanoid_00031250.pth")
@@ -87,7 +87,7 @@ class AMPPlayerContinuous(common_player.CommonPlayer):
 
     def _post_step(self, info):
         super()._post_step(info)
-        if (self.env.task.viewer):
+        if (self.env.viewer):
             self._amp_debug(info)
 
         return
@@ -101,18 +101,18 @@ class AMPPlayerContinuous(common_player.CommonPlayer):
         config = super()._build_net_config()
         if (hasattr(self, 'env')):
             config['amp_input_shape'] = self.env.amp_observation_space.shape
-            config['task_obs_size_detail'] = self.env.task.get_task_obs_size_detail()
-            if self.env.task.has_task:
-                config['self_obs_size'] = self.env.task.get_self_obs_size()
-                config['task_obs_size'] = self.env.task.get_task_obs_size()
+            config['task_obs_size_detail'] = self.env.get_task_obs_size_detail()
+            if self.env.has_task:
+                config['self_obs_size'] = self.env.get_self_obs_size()
+                config['task_obs_size'] = self.env.get_task_obs_size()
                 
         else:
             config['amp_input_shape'] = self.env_info['amp_observation_space']
             
-            # if self.env.task.has_task:
-            #     config['task_obs_size_detail'] = self.vec_env.env.task.get_task_obs_size_detail()
-            #     config['self_obs_size'] = self.vec_env.env.task.get_self_obs_size()
-            #     config['task_obs_size'] = self.vec_env.env.task.get_task_obs_size()
+            # if self.env.has_task:
+            #     config['task_obs_size_detail'] = self.vec_env.env.get_task_obs_size_detail()
+            #     config['self_obs_size'] = self.vec_env.env.get_self_obs_size()
+            #     config['task_obs_size'] = self.vec_env.env.get_task_obs_size()
 
         return config
 
@@ -172,7 +172,7 @@ class AMPPlayerDiscrete(common_player.CommonPlayerDiscrete):
 
         super().__init__(config)
 
-        # self.env.task.update_value_func(self._eval_critic, self._eval_actor)
+        # self.env.update_value_func(self._eval_critic, self._eval_actor)
         # import copy
         # self.orcale_model = copy.deepcopy(self.model)
         # checkpoint = torch_ext.load_checkpoint("output/dgx/smpl_im_master_singles_6_3/Humanoid_00031250.pth")
@@ -237,7 +237,7 @@ class AMPPlayerDiscrete(common_player.CommonPlayerDiscrete):
 
     def _post_step(self, info):
         super()._post_step(info)
-        if (self.env.task.viewer):
+        if (self.env.viewer):
             self._amp_debug(info)
 
         return
@@ -251,17 +251,17 @@ class AMPPlayerDiscrete(common_player.CommonPlayerDiscrete):
         config = super()._build_net_config()
         if (hasattr(self, 'env')):
             config['amp_input_shape'] = self.env.amp_observation_space.shape
-            config['task_obs_size_detail'] = self.env.task.get_task_obs_size_detail()
-            if self.env.task.has_task:
-                config['self_obs_size'] = self.env.task.get_self_obs_size()
-                config['task_obs_size'] = self.env.task.get_task_obs_size()
+            config['task_obs_size_detail'] = self.env.get_task_obs_size_detail()
+            if self.env.has_task:
+                config['self_obs_size'] = self.env.get_self_obs_size()
+                config['task_obs_size'] = self.env.get_task_obs_size()
                 
         else:
             config['amp_input_shape'] = self.env_info['amp_observation_space']
-            config['task_obs_size_detail'] = self.vec_env.env.task.get_task_obs_size_detail()
-            if self.env.task.has_task:
-                config['self_obs_size'] = self.vec_env.env.task.get_self_obs_size()
-                config['task_obs_size'] = self.vec_env.env.task.get_task_obs_size()
+            config['task_obs_size_detail'] = self.vec_env.env.get_task_obs_size_detail()
+            if self.env.has_task:
+                config['self_obs_size'] = self.vec_env.env.get_self_obs_size()
+                config['task_obs_size'] = self.vec_env.env.get_task_obs_size()
 
         return config
 

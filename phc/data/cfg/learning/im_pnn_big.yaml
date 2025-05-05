@@ -1,5 +1,5 @@
 params:
-  seed: 0
+  seed: 66
 
   algo:
     name: im_amp
@@ -49,11 +49,11 @@ params:
     multi_gpu: False
     ppo: True
     mixed_precision: False
-    normalize_input: True
-    normalize_value: True
+    normalize_input: False
+    normalize_value: False
     reward_shaper:
       scale_value: 1
-    normalize_advantage: True
+    normalize_advantage: False
     gamma: 0.99
     tau: 0.95
     learning_rate: 2e-5
@@ -70,7 +70,6 @@ params:
     e_clip: 0.2
     horizon_length: 32
     minibatch_size: 16384
-#    minibatch_size: 512
     mini_epochs: 6
     critic_coef: 5
     clip_value: False
@@ -81,13 +80,12 @@ params:
     amp_replay_keep_prob: 0.01
     amp_batch_size: 512
     amp_minibatch_size: 4096
-#    amp_minibatch_size: 512
     disc_coef: 5
     disc_logit_reg: 0.01
     disc_grad_penalty: 5
     disc_reward_scale: 2
     disc_weight_decay: 0.0001
-    normalize_amp_input: True
+    normalize_amp_input: False
 
     task_reward_w: 0.5
     disc_reward_w: 0.5

@@ -1,6 +1,6 @@
 # No softmax
 params:
-  seed: 0
+  seed: 66
 
   algo:
     name: im_amp

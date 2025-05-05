@@ -101,7 +101,7 @@ class Humanoid(BaseTask):
         self._local_root_obs = self.cfg["env"]["local_root_obs"]
         self._root_height_obs = self.cfg["env"].get("root_height_obs", True)
         self._enable_early_termination = self.cfg["env"]["enableEarlyTermination"]
-        self.temp_running_mean = self.cfg["env"].get("temp_running_mean", True)
+        self.temp_running_mean = self.cfg["env"].get("temp_running_mean", False)
         self.partial_running_mean = self.cfg["env"].get("partial_running_mean", False)
         self.self_obs_v = self.cfg["env"].get("self_obs_v", 1)
 

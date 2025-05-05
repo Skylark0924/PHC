@@ -51,12 +51,13 @@ class CommonAgent(a2c_continuous.A2CAgent):
         
         if self.normalize_input:
             if "vec_env" in self.__dict__:
-                obs_shape = torch_ext.shape_whc_to_cwh(self.vec_env.env.task.get_running_mean_size())
+                obs_shape = torch_ext.shape_whc_to_cwh(self.vec_env.env.get_running_mean_size())
             else:
                 obs_shape = self.obs_shape
             self.running_mean_std = RunningMeanStd(obs_shape).to(self.ppo_device)
             
-        net_config['mean_std'] = self.running_mean_std
+            net_config['mean_std'] = self.running_mean_std
+            
         self.model = self.network.build(net_config)
         self.model.to(self.ppo_device)
         self.states = None
@@ -1120,5 +1121,5 @@ class CommonDiscreteAgent(a2c_discrete.DiscreteA2CAgent):
         rand_col = np.random.uniform(0.0, 1.0, size=3)
         rand_col = range_sum * rand_col / np.linalg.norm(rand_col)
         rand_col += base_col
-        self.vec_env.env.task.set_char_color(rand_col, env_ids)
+        self.vec_env.env.set_char_color(rand_col, env_ids)
         return

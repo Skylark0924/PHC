@@ -32,7 +32,7 @@ import sys
 import pdb
 import os.path as osp
 os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 os.environ["WANDB_DISABLE_GIT"] = "True"
 
 sys.path.append(os.getcwd())
@@ -211,6 +211,7 @@ class RLGPUEnv(vecenv.IVecEnv):
 
     def reset(self, env_ids=None):
         self.full_state["obs"] = self.env.reset(env_ids)
+
         if self.use_global_obs:
             self.full_state["states"] = self.env.get_state()
             return self.full_state
@@ -226,10 +227,10 @@ class RLGPUEnv(vecenv.IVecEnv):
         info['observation_space'] = self.env.observation_space
         info['amp_observation_space'] = self.env.amp_observation_space
         
-        info['enc_amp_observation_space'] = self.env.enc_amp_observation_space
+        # info['enc_amp_observation_space'] = self.env.enc_amp_observation_space
         
-        if isinstance(self.env.task, humanoid_amp_task.HumanoidAMPTask):
-            info['task_obs_size'] = self.env.task.get_task_obs_size()
+        if isinstance(self.env, humanoid_amp_task.HumanoidAMPTask):
+            info['task_obs_size'] = self.env.get_task_obs_size()
         else:
             info['task_obs_size'] = 0
 

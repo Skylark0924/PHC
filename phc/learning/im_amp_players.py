@@ -26,7 +26,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
     def __init__(self, config):
         super().__init__(config)
 
-        self.terminate_state = torch.zeros(self.env.task.num_envs, device=self.device)
+        self.terminate_state = torch.zeros(self.env.num_envs, device=self.device)
         self.terminate_memory = []
 
         self.mpjpe, self.mpjpe_all = [], []
@@ -37,7 +37,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
         if COLLECT_Z:
             self.zs, self.zs_all = [], []
 
-        humanoid_env = self.env.task
+        humanoid_env = self.env
         humanoid_env._termination_distances[:] = 0.5 # if not humanoid_env.strict_eval else 0.25 # ZL: use UHC's termination distance
         humanoid_env._recovery_episode_prob, humanoid_env._fall_init_prob = 0, 0
 
@@ -71,7 +71,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
         # modify done such that games will exit and reset.
         if flags.im_eval:
 
-            humanoid_env = self.env.task
+            humanoid_env = self.env
             
             termination_state = torch.logical_and(self.curr_stpes <= humanoid_env._motion_lib.get_motion_num_steps() - 1, info["terminate"]) # if terminate after the last frame, then it is not a termination. curr_step is one step behind simulation. 
             # termination_state = info["terminate"]
@@ -224,7 +224,7 @@ class IMAMPPlayerContinuous(amp_players.AMPPlayerContinuous):
 
                 humanoid_env.forward_motion_samples()
                 self.terminate_state = torch.zeros(
-                    self.env.task.num_envs, device=self.device
+                    self.env.num_envs, device=self.device
                 )
 
                 self.pbar.update(1)

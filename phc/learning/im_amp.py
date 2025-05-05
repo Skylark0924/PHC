@@ -97,7 +97,7 @@ class IMAmpAgent(amp_agent.AMPAgent):
             failed_pth = sorted(all_fails, key=lambda x: int(x.split("_")[-1].split(".")[0]))[-1]
             print(f"loading: {failed_pth}")
             termination_history = joblib.load(failed_pth)['termination_history']
-            humanoid_env = self.vec_env.env.task
+            humanoid_env = self.vec_env.env
             res = humanoid_env._motion_lib.update_sampling_prob(termination_history)
             if res:
                 print("Successfully restored termination history")
@@ -109,12 +109,12 @@ class IMAmpAgent(amp_agent.AMPAgent):
     def init_rnn(self):
         if self.is_rnn:
             rnn_states = self.model.get_default_rnn_state()
-            self.states = [torch.zeros((s.size()[0], self.vec_env.env.task.num_envs, s.size(
+            self.states = [torch.zeros((s.size()[0], self.vec_env.env.num_envs, s.size(
             )[2]), dtype=torch.float32).to(self.device) for s in rnn_states]
             
             
     def update_training_data(self, failed_keys):
-        humanoid_env = self.vec_env.env.task
+        humanoid_env = self.vec_env.env
         if humanoid_env.auto_pmcp:
             humanoid_env._motion_lib.update_hard_sampling_weight(failed_keys)
         elif humanoid_env.auto_pmcp_soft:
@@ -131,7 +131,7 @@ class IMAmpAgent(amp_agent.AMPAgent):
         self.set_eval()
 
         self.terminate_state = torch.zeros(
-            self.vec_env.env.task.num_envs, device=self.device
+            self.vec_env.env.num_envs, device=self.device
         )
         self.terminate_memory = []
         self.mpjpe, self.mpjpe_all = [], []
@@ -139,7 +139,7 @@ class IMAmpAgent(amp_agent.AMPAgent):
         self.pred_pos, self.pred_pos_all = [], []
         self.curr_stpes = 0
 
-        humanoid_env = self.vec_env.env.task
+        humanoid_env = self.vec_env.env
         self.success_rate = 0
         self.pbar = tqdm(
             range(humanoid_env._motion_lib._num_unique_motions // humanoid_env.num_envs)
@@ -235,7 +235,7 @@ class IMAmpAgent(amp_agent.AMPAgent):
         end = False
         eval_info = {}
         # modify done such that games will exit and reset.
-        humanoid_env = self.vec_env.env.task
+        humanoid_env = self.vec_env.env
         termination_state = torch.logical_and(self.curr_stpes <= humanoid_env._motion_lib.get_motion_num_steps() - 1, info["terminate"]) # if terminate after the last frame, then it is not a termination. curr_step is one step behind simulation. 
         # termination_state = info["terminate"]
         self.terminate_state = torch.logical_or(termination_state, self.terminate_state)
@@ -340,7 +340,7 @@ class IMAmpAgent(amp_agent.AMPAgent):
             done[:] = 1  # Turning all of the sequences done and reset for the next batch of eval.
 
             humanoid_env.forward_motion_samples()
-            self.terminate_state = torch.zeros(self.vec_env.env.task.num_envs, device=self.device)
+            self.terminate_state = torch.zeros(self.vec_env.env.num_envs, device=self.device)
 
             self.pbar.update(1)
             self.pbar.refresh()

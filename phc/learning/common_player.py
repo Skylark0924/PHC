@@ -181,7 +181,7 @@ class CommonPlayer(players.PpoPlayerContinuous):
                 obs_shape = torch_ext.shape_whc_to_cwh(self.obs_shape)
             self.running_mean_std = RunningMeanStd(obs_shape).to(self.device)
             self.running_mean_std.eval()
-        config['mean_std'] = self.running_mean_std
+            config['mean_std'] = self.running_mean_std
         self.model = self.network.build(config)
         self.model.to(self.device)
         self.model.eval()

@@ -1,6 +1,6 @@
 from rl_games.algos_torch import torch_ext
 from rl_games.algos_torch import layers
-import phc.learning.network_builder as network_builder
+import rofunc.learning.RofuncRL.models.network_builder as network_builder
 import torch
 import torch.nn as nn
 import numpy as np
@@ -236,15 +236,15 @@ class AMPBuilder(network_builder.A2CBuilder):
             mlp_out_size = self._disc_units[-1]
             self._disc_logits = torch.nn.Linear(mlp_out_size, 1)
 
-            mlp_init = self.init_factory.create(**self._disc_initializer)
-            for m in self._disc_mlp.modules():
-                if isinstance(m, nn.Linear):
-                    mlp_init(m.weight)
-                    if getattr(m, "bias", None) is not None:
-                        torch.nn.init.zeros_(m.bias)
+            # mlp_init = self.init_factory.create(**self._disc_initializer)
+            # for m in self._disc_mlp.modules():
+            #     if isinstance(m, nn.Linear):
+            #         mlp_init(m.weight)
+            #         if getattr(m, "bias", None) is not None:
+            #             torch.nn.init.zeros_(m.bias)
 
-            torch.nn.init.uniform_(self._disc_logits.weight, -DISC_LOGIT_INIT_SCALE, DISC_LOGIT_INIT_SCALE)
-            torch.nn.init.zeros_(self._disc_logits.bias)
+            # torch.nn.init.uniform_(self._disc_logits.weight, -DISC_LOGIT_INIT_SCALE, DISC_LOGIT_INIT_SCALE)
+            # torch.nn.init.zeros_(self._disc_logits.bias)
 
             return
 
